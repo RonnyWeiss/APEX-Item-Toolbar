@@ -1,7 +1,7 @@
 {
     "name": "APEX Item Toolbar",
-    "version": "1.0",
-    "description": "This plug - in is used to add a toolbar to textfield or textarea items.E.g.is to get a smiley toolbar to insert into items, or you can select text and mark it as bold, italic underline or as subtext. Login for Demo is: user-demo / 123456@",
+    "version": "1.1",
+    "description": "This plug-in is used to add a toolbar to textfield or textarea items. \r\nThe following toolbars are available:\r\n- Add Emojis\r\n- Format String with HTML\r\n- Uno & Redo Option\r\n- Empty the item. Login for Demo is: user-demo / 123456@",
     "keywords": ["oracle", "apex", "plugin", "dynamic action", "responsive"],
     "homepage": "https://github.com/RonnyWeiss/APEX-Item-Toolbar",
     "bugs": {

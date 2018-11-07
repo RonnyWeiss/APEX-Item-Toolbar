@@ -4,7 +4,12 @@
 
 ![Screenshot](https://github.com/RonnyWeiss/APEX-Item-Toolbar/blob/master/screenshot.gif?raw=true)
 
-This plug-in is used to add a toolbar to textfield or textarea items. E.g. is to get a smiley toolbar to insert into items, or you can select text and mark it as bold or italic.
+This plug-in is used to add a toolbar to textfield or textarea items. 
+The following toolbars are available:
+- Add Emojis
+- Format String with HTML
+- Uno & Redo Option
+- Empty the item
 
 For working Demo just click on:
 
