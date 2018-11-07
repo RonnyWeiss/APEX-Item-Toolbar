@@ -1,9 +1,10 @@
-function itemToolbar(self, type) {
+function itemToolbar(self, type, formatTypes, emojiiTypes) {
     "use strict";
-    var scriptVersion = "1.1";
+    var scriptVersion = "2.0";
 
     $.each($(self.affectedElements), function (i, item) {
 
+        // add only if it's a textare or textfield
         if ($(item).is("textarea") || $(item).attr("type") == "text") {
 
             var itemInputContainer = $(item).closest("div.t-Form-inputContainer");
@@ -11,8 +12,12 @@ function itemToolbar(self, type) {
             var itemValArr = [];
             var itemIdx = 0;
             var typeArr = type.split(":");
+            var formatTypesArr = formatTypes.split(":");
+            var emojiiTypesArr = emojiiTypes.split(":");
+            var isFirst = true;
 
-            var smileyArr = ["&#128513;",
+            var smileyStdArr = [
+            "&#128513;",
             "&#128514;",
             "&#128517;",
             "&#128520;",
@@ -23,25 +28,63 @@ function itemToolbar(self, type) {
             "&#128530;",
             "&#128545;",
             "&#128548;",
-            "&#128561;"];
+            "&#128561;",
+            "&#10084;",
+            "&#10004;",
+            "&#128077;",
+            "&#9992;",
+            "&#11088;",
+            "&#10060;",
+            "&#10071;",
+            "&#9749;",
+            "&#9742;",
+            "&#128163;",
+            "&#9888;",
+            "&#128269;",
+            "&#128198;"];
 
-            var htmlFormat = [{
+            // Filter emojii Array depending on selection
+            var smileyArr = [];
+
+            // convert emoji array to array of numbers because split make string array
+            for (var i = 0; i < emojiiTypesArr.length; i++) {
+                emojiiTypesArr[i] = +emojiiTypesArr[i];
+            }
+            for (var i = 0, len = smileyStdArr.length; i < len; i++) {
+                if ($.inArray(i + 1, emojiiTypesArr) >= 0) {
+                    smileyArr.push(smileyStdArr[i]);
+                };
+            };
+
+            var htmlFormatStdArr = [{
+                "type": "b",
                 "start": "<b>",
                 "end": "<\/b>",
                 "icon": "fa-bold"
             }, {
+                "type": "i",
                 "start": "<i>",
                 "end": "<\/i>",
                 "icon": "fa-italic"
             }, {
+                "type": "u",
                 "start": "<u>",
                 "end": "<\/u>",
                 "icon": "fa-underline"
             }, {
+                "type": "s",
                 "start": "<sub>",
                 "end": "<\/sub>",
                 "icon": "fa-subscript"
             }];
+
+            // Filter htmlFormat Array depending on selection
+            var htmlFormatArr = [];
+            for (var i = 0, len = htmlFormatStdArr.length; i < len; i++) {
+                if ($.inArray(htmlFormatStdArr[i].type, formatTypes) >= 0) {
+                    htmlFormatArr.push(htmlFormatStdArr[i]);
+                };
+            };
 
             var unDoReDoArr = [{
                 "type": "undo",
@@ -51,9 +94,15 @@ function itemToolbar(self, type) {
                 "icon": "fa-repeat"
             }];
 
+            // main toolbar region
             var pSpan = $("<span></span>");
             pSpan.addClass("t-Form-inlineHelp");
 
+            /************************************************************************
+             **
+             ** Used to add smiley toolbar
+             **
+             ***********************************************************************/
             function addSmileys() {
                 $.each(smileyArr, function (i, smiley) {
                     var region = $("<span></span>");
@@ -72,8 +121,11 @@ function itemToolbar(self, type) {
                             itemValArr.push(itemVal);
                             itemIdx = itemValArr.length;
                         }
-
-                        itemVal = itemVal.substring(0, markStart) + txt + itemVal.substring(markStart, itemVal.length);
+                        if (isFirst && markStart == 0) {
+                            itemVal = itemVal + txt;
+                        } else {
+                            itemVal = itemVal.substring(0, markStart) + txt + itemVal.substring(markStart, itemVal.length);
+                        }
                         apex.item(item).setValue(itemVal);
                     });
 
@@ -81,8 +133,13 @@ function itemToolbar(self, type) {
                 });
             }
 
+            /************************************************************************
+             **
+             ** Used to add html format toolbar
+             **
+             ***********************************************************************/
             function htmlFormats() {
-                $.each(htmlFormat, function (i, obj) {
+                $.each(htmlFormatArr, function (i, obj) {
                     var region = $("<span></span>");
                     region.addClass("item-toolbar");
                     region.addClass("fa");
@@ -93,6 +150,7 @@ function itemToolbar(self, type) {
                     region.css("margin-right", "2px");
                     region.attr("aria-hidden", "true");
                     region.on("click", function () {
+                        // check item selection 
                         var markStart = $(item).prop("selectionStart");
                         var markEnd = $(item).prop("selectionEnd");
                         var itemVal = apex.item(item).getValue();
@@ -112,13 +170,20 @@ function itemToolbar(self, type) {
                 });
             }
 
+            /************************************************************************
+             **
+             ** Used to add undo redo toolbar
+             **
+             ***********************************************************************/
             function unDoReDo() {
 
+                // on keydown save item val state
                 $(item).keydown(function () {
                     itemValArr.push(apex.item(item).getValue());
                     itemIdx = itemValArr.length;
                 });
 
+                // add toolbar with undo and redo button
                 $.each(unDoReDoArr, function (i, obj) {
                     var region = $("<span></span>");
                     region.addClass("item-toolbar");
@@ -137,8 +202,6 @@ function itemToolbar(self, type) {
                                 }
                                 itemIdx--;
                                 apex.item(item).setValue(itemValArr[itemIdx]);
-
-
                             }
                         } else {
                             if (itemIdx < itemValArr.length - 1) {
@@ -154,6 +217,11 @@ function itemToolbar(self, type) {
 
             }
 
+            /************************************************************************
+             **
+             ** Used to add clear item toolbar
+             **
+             ***********************************************************************/
             function clearItem() {
 
                 var region = $("<span></span>");
@@ -177,6 +245,11 @@ function itemToolbar(self, type) {
 
             }
 
+            /************************************************************************
+             **
+             ** Used to add placeholder between toolbars
+             **
+             ***********************************************************************/
             function placeHolder() {
                 var region = $("<span></span>");
                 region.css("margin-right", "5px");
@@ -184,6 +257,12 @@ function itemToolbar(self, type) {
                 pSpan.append(region);
             }
 
+
+            /************************************************************************
+             **
+             ** Used to add selected toolbars
+             **
+             ***********************************************************************/
             $.each(typeArr, function (i, obj) {
                 if (obj == "undoredo") {
                     unDoReDo();
@@ -208,6 +287,11 @@ function itemToolbar(self, type) {
                 }
             });
 
+            /************************************************************************
+             **
+             ** Used to add toolbars to item
+             **
+             ***********************************************************************/
             var itemWrapper = $(itemInputContainer).find(".t-Form-itemWrapper");
             pSpan.insertAfter(itemWrapper);
         }
