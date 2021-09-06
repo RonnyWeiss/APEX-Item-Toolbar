@@ -1,8 +1,6 @@
  # APEX Item Toolbar
 
-![Screenshot](https://github.com/RonnyWeiss/APEX-Item-Toolbar/blob/master/screenshot.png?raw=true)
-
-![Screenshot](https://github.com/RonnyWeiss/APEX-Item-Toolbar/blob/master/screenshot.gif?raw=true)
+![Screenshot](https://raw.githubusercontent.com/RonnyWeiss/APEX-Item-Toolbar/master/screenshot.gif)
 
 This plug-in is used to add a toolbar to textfield or textarea items. 
 The following toolbars are available:

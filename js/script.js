@@ -108,6 +108,7 @@ function itemToolbar(self, type, formatTypes, emojiiTypes) {
                     var region = $("<span></span>");
                     region.addClass("item-toolbar");
                     region.css("cursor", "pointer");
+                    region.css("user-select", "none");
                     region.css("font-size", stdFontSize);
                     region.css("line-height", "1.5em");
                     region.css("margin-right", "2px");
